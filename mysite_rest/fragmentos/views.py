@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse, Http404
 
 from django.views.decorators.csrf import csrf_exempt
 
-from rest_framework import status
+from rest_framework import status, mixins, generics
 
 from rest_framework.decorators import api_view
 
@@ -20,6 +20,38 @@ from fragmentos.serializers import SerializadorFragmento
 
 # Create your views here.
 
+#	-- VISTAS BASADAS EN CLASES USANDO MIXIN CLASSES --
+# vista que lista todos los fragmentos o crea uno nuevo
+class FragmentoLista(mixins.ListModelMixin,
+                     mixins.CreateModelMixin,
+                     generics.GenericAPIView):
+
+    queryset = Fragmento.objects.all()
+    serializer_class = SerializadorFragmento
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+# vista que muestra, actualiza o elimina un fragmento
+class FragmentoDetalles(mixins.RetrieveModelMixin,
+                        mixins.UpdateModelMixin,
+                        mixins.DestroyModelMixin,
+                        generics.GenericAPIView):
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+# --------------------------------------------------------------------------------------------------------
+'''
 #	-- VISTAS BASADAS EN CLASES --
 # vista que lista todos los fragmentos o crea uno nuevo
 class FragmentoLista(APIView):
@@ -64,7 +96,7 @@ class FragmentoDetalles(APIView):
         return Response(status = status.HTTP_204_NO_CONTENT)
 
 # --------------------------------------------------------------------------------------------------------
-'''
+
 #	-- VISTAS BASADAS EN FUNCIONES --
 # funcionalidad de api_view para indicar una lista de métodos http que la vista debe responder
 @api_view(['GET', 'POST'])
