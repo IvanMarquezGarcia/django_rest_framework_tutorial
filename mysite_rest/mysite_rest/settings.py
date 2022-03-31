@@ -77,11 +77,14 @@ WSGI_APPLICATION = 'mysite_rest.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'db_prueba',
+        'USER': 'rol_prueba',
+        'PASSWORD': 'pswd',
+        'HOST': '127.0.0.1',
+        'PORT': '',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
