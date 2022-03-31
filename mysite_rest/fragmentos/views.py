@@ -20,6 +20,20 @@ from fragmentos.serializers import SerializadorFragmento
 
 # Create your views here.
 
+#	-- VISTAS BASADAS EN CLASES GENÉRICAS USANDO MIXIN CLASSES --
+# vista que lista todos los fragmentos o crea uno nuevo
+class FragmentoLista(generics.ListCreateAPIView):
+    queryset = Fragmento.objects.all()
+    serializer_class = SerializadorFragmento
+
+# vista que muestra, actualiza o elimina un fragmento
+class FragmentoDetalles(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Fragmento.objects.all()
+    serializer_class = SerializadorFragmento
+
+# --------------------------------------------------------------------------------------
+
+'''
 #	-- VISTAS BASADAS EN CLASES USANDO MIXIN CLASSES --
 # vista que lista todos los fragmentos o crea uno nuevo
 class FragmentoLista(mixins.ListModelMixin,
@@ -54,7 +68,7 @@ class FragmentoDetalles(mixins.RetrieveModelMixin,
         return self.destroy(request, *args, **kwargs)
 
 # --------------------------------------------------------------------------------------------------------
-'''
+
 #	-- VISTAS BASADAS EN CLASES --
 # vista que lista todos los fragmentos o crea uno nuevo
 class FragmentoLista(APIView):
