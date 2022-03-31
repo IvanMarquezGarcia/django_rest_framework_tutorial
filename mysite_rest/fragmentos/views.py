@@ -41,6 +41,9 @@ class FragmentoDetalles(mixins.RetrieveModelMixin,
                         mixins.DestroyModelMixin,
                         generics.GenericAPIView):
 
+    queryset = Fragmento.objects.all()
+    serializer_class = SerializadorFragmento
+
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
