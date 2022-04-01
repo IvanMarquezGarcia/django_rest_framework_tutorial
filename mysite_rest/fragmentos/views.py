@@ -4,7 +4,9 @@ from django.http import HttpResponse, JsonResponse, Http404
 
 from django.views.decorators.csrf import csrf_exempt
 
-from rest_framework import status, mixins, generics
+from django.contrib.auth.models import User
+
+from rest_framework import status, mixins, generics, permissions
 
 from rest_framework.decorators import api_view
 
@@ -14,9 +16,13 @@ from rest_framework.parsers import JSONParser
 
 from rest_framework.views import APIView
 
+from rest_framework.reverse import reverse
+
 from fragmentos.models import Fragmento
 
-from fragmentos.serializers import SerializadorFragmento
+from fragmentos.serializers import SerializadorFragmento, SerializadorUser
+
+from fragmentos.permissions import IsOwnerOrReadOnly
 
 # Create your views here.
 
@@ -25,11 +31,26 @@ from fragmentos.serializers import SerializadorFragmento
 class FragmentoLista(generics.ListCreateAPIView):
     queryset = Fragmento.objects.all()
     serializer_class = SerializadorFragmento
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner = self.request.user)
 
 # vista que muestra, actualiza o elimina un fragmento
 class FragmentoDetalles(generics.RetrieveUpdateDestroyAPIView):
     queryset = Fragmento.objects.all()
     serializer_class = SerializadorFragmento
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+# vista que lista todos los usuarios
+class UserLista(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = SerializadorUser
+
+class UserDetalles(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = SerializadorUser
 
 # --------------------------------------------------------------------------------------
 

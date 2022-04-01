@@ -9,6 +9,8 @@ urlpatterns = [
     path('', views.FragmentoLista.as_view()),
     path('fragmentos/', views.FragmentoLista.as_view()),
     path('fragmentos/<int:pk>/', views.FragmentoDetalles.as_view()),
+    path('usuarios/', views.UserLista.as_view()),
+    path('usuarios/<int:pk>/', views.UserDetalles.as_view()),
 ]
 
 # ------------------------------------------------------------------------------------

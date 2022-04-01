@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'mysite_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_prueba',
+        'NAME': 'db_fragmentos',
         'USER': 'rol_prueba',
         'PASSWORD': 'pswd',
         'HOST': '127.0.0.1',

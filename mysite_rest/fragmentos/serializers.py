@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+
 from rest_framework import serializers
 
 from fragmentos.models import Fragmento, LENGUAGE_CHOICES, STYLE_CHOICES
@@ -29,6 +31,17 @@ class SerializadorFragmento(serializers.Serializer):
         return instance
 '''
 class SerializadorFragmento(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source = 'owner.username')
+
     class Meta:
         model = Fragmento
-        fields = ['id', 'created', 'title', 'code', 'linenos', 'lenguage', 'style']
+        fields = ['id', 'created', 'owner', 'title', 'code', 'linenos', 'lenguage', 'style']
+
+
+
+class SerializadorUser(serializers.ModelSerializer):
+    fragmentos = serializers.PrimaryKeyRelatedField(many = True, queryset = Fragmento.objects.all())
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'fragmentos']
