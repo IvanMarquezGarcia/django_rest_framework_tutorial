@@ -8,10 +8,10 @@ from fragmentos.models import Fragmento, LENGUAGE_CHOICES, STYLE_CHOICES
 #	-- Heredando de serializers.HyperlinkedModelSerializer --
 class SerializadorFragmento(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source = 'owner.username')
-    highlight = serializers.HyperlinkedIdentityField(view_name = 'fragmentos_detalles_highlight',
+    highlight = serializers.HyperlinkedIdentityField(view_name = 'fragmentos-highlight',
                                                      format='html')
     url = serializers.HyperlinkedIdentityField(
-        view_name = 'fragmentos_detalles',
+        view_name = 'fragmentos-detail',
     )
 
     class Meta:
@@ -23,10 +23,10 @@ class SerializadorUser(serializers.HyperlinkedModelSerializer):
 #    lookup_field = ''
     fragmentos = serializers.HyperlinkedRelatedField(many = True,
                                                      read_only = True,
-                                                     view_name = 'fragmentos_detalles',)
+                                                     view_name = 'fragmentos-detail',)
 
     url = serializers.HyperlinkedIdentityField(
-        view_name = 'usuarios_detalles',
+        view_name = 'usuarios-detail',
     )
     #fin zona de pruebas
 

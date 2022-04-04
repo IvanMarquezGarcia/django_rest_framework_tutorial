@@ -6,9 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.auth.models import User
 
-from rest_framework import status, mixins, generics, permissions, renderers
+from rest_framework import status, mixins, generics, permissions, renderers, viewsets
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 
 from rest_framework.response import Response
 
@@ -26,15 +26,38 @@ from fragmentos.permissions import IsOwnerOrReadOnly
 
 # Create your views here.
 
-#	-- VISTA PARA PORTAL DE INICIO --
+#	-- VISTA PARA PORTAL DE INICIO (no usar en conjunto a la clase Router) --
+'''
 @api_view(['GET'])
 def api_root(request, format = None):
     return Response({
         'usarios': reverse('usuarios_lista', request = request, format = format),
         'fragmentos': reverse('fragmentos_lista', request = request, format = format),
     })
+'''
+#	-- VISTAS VIEWSET --
+# vista que automaticamente provee las acciones de un crud
+# es posible añadir la accion para mostrar el highlight
+class FragmentoViewSet(viewsets.ModelViewSet):
+    queryset = Fragmento.objects.all()
+    serializer_class = SerializadorFragmento
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
+    @action(detail = True, renderer_classes = [renderers.StaticHTMLRenderer])
+    def highlight(self, request, *args, **kwargs):
+        fragmento = self.get_object()
+        return Response(fragmento.highlighted)
 
+    def perform_create(self, serializer):
+        serializer.save(owner = self.request.user)
+
+# vista que automaticamente provee las acciones de listar y ver detalles
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = SerializadorUser
+
+# ---------------------------------------------------------------------------------------------
+'''
 #	-- VISTAS BASADAS EN CLASES GENÉRICAS USANDO MIXIN CLASSES --
 # vista que lista todos los fragmentos o crea uno nuevo
 class FragmentoLista(generics.ListCreateAPIView):
@@ -93,7 +116,7 @@ class UserDetalles(generics.RetrieveAPIView):
 
 # --------------------------------------------------------------------------------------
 
-'''
+
 #	-- VISTAS BASADAS EN CLASES USANDO MIXIN CLASSES --
 # vista que lista todos los fragmentos o crea uno nuevo
 class FragmentoLista(mixins.ListModelMixin,
