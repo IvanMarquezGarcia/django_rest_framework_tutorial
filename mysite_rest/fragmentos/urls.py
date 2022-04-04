@@ -6,11 +6,27 @@ from fragmentos import views
 
 #	-- URLS PARA VISTAS BASADAS EN CLASES --
 urlpatterns = [
-    path('', views.FragmentoLista.as_view()),
-    path('fragmentos/', views.FragmentoLista.as_view()),
-    path('fragmentos/<int:pk>/', views.FragmentoDetalles.as_view()),
-    path('usuarios/', views.UserLista.as_view()),
-    path('usuarios/<int:pk>/', views.UserDetalles.as_view()),
+    path('', views.api_root),
+
+    path('fragmentos/',
+         views.FragmentoLista.as_view(),
+         name = 'fragmentos_lista'),
+
+    path('fragmentos/<int:pk>/',
+         views.FragmentoDetalles.as_view(),
+         name = 'fragmentos_detalles'),
+
+    path('fragmentos/<int:pk>/highlight/',
+         views.FragmentoHighlight.as_view(),
+         name = 'fragmentos_detalles_highlight'),
+
+    path('usuarios/',
+         views.UserLista.as_view(),
+         name = 'usuarios_lista'),
+
+    path('usuarios/<int:pk>/',
+         views.UserDetalles.as_view(),
+         name = 'usuarios_detalles'),
 ]
 
 # ------------------------------------------------------------------------------------

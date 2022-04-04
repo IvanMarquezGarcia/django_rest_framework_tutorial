@@ -27,6 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# django rest framework settings
+'''REST_FRAMEWORK = {
+    'DEFAULT_MODEL_SERIALIZER_CLASS': 'fragmentos.serializers.SerializadorFragmento',
+}'''
+
 
 # Application definition
 

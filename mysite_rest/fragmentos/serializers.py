@@ -4,7 +4,59 @@ from rest_framework import serializers
 
 from fragmentos.models import Fragmento, LENGUAGE_CHOICES, STYLE_CHOICES
 
-'''# Heredando de Serializer
+
+#	-- Heredando de serializers.HyperlinkedModelSerializer --
+class SerializadorFragmento(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source = 'owner.username')
+    highlight = serializers.HyperlinkedIdentityField(view_name = 'fragmentos_detalles_highlight',
+                                                     format='html')
+    url = serializers.HyperlinkedIdentityField(
+        view_name = 'fragmentos_detalles',
+    )
+
+    class Meta:
+        model = Fragmento
+        fields = ['url', 'id', 'created', 'owner', 'title', 'code', 'highlight', 'linenos', 'lenguage', 'style']
+
+class SerializadorUser(serializers.HyperlinkedModelSerializer):
+    #zona de pruebas
+#    lookup_field = ''
+    fragmentos = serializers.HyperlinkedRelatedField(many = True,
+                                                     read_only = True,
+                                                     view_name = 'fragmentos_detalles',)
+
+    url = serializers.HyperlinkedIdentityField(
+        view_name = 'usuarios_detalles',
+    )
+    #fin zona de pruebas
+
+#    fragmentos = serializers.HyperlinkedRelatedField(many = True, view_name = 'fragmentos_lista', read_only = True)
+
+    class Meta:
+        model = User
+        fields = ['url', 'id', 'username', 'fragmentos']
+
+# ------------------------------------------------------------------------------
+'''
+#	-- Heredando de serializers.ModelSerializer --
+class SerializadorFragmento(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source = 'owner.username')
+
+    class Meta:
+        model = Fragmento
+        fields = ['id', 'created', 'owner', 'title', 'code', 'linenos', 'lenguage', 'style']
+
+
+class SerializadorUser(serializers.ModelSerializer):
+    fragmentos = serializers.PrimaryKeyRelatedField(many = True, queryset = Fragmento.objects.all())
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'fragmentos']
+
+# -------------------------------------------------------------------------------
+
+#	-- Heredando de Serializer --
 class SerializadorFragmento(serializers.Serializer):
     id = serializers.IntegerField(read_only = True)
     created = serializers.DateTimeField()
@@ -30,18 +82,3 @@ class SerializadorFragmento(serializers.Serializer):
 
         return instance
 '''
-class SerializadorFragmento(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source = 'owner.username')
-
-    class Meta:
-        model = Fragmento
-        fields = ['id', 'created', 'owner', 'title', 'code', 'linenos', 'lenguage', 'style']
-
-
-
-class SerializadorUser(serializers.ModelSerializer):
-    fragmentos = serializers.PrimaryKeyRelatedField(many = True, queryset = Fragmento.objects.all())
-
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'fragmentos']

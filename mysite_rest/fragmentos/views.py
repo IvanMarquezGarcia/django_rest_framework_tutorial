@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.auth.models import User
 
-from rest_framework import status, mixins, generics, permissions
+from rest_framework import status, mixins, generics, permissions, renderers
 
 from rest_framework.decorators import api_view
 
@@ -26,9 +26,23 @@ from fragmentos.permissions import IsOwnerOrReadOnly
 
 # Create your views here.
 
+#	-- VISTA PARA PORTAL DE INICIO --
+@api_view(['GET'])
+def api_root(request, format = None):
+    return Response({
+        'usarios': reverse('usuarios_lista', request = request, format = format),
+        'fragmentos': reverse('fragmentos_lista', request = request, format = format),
+    })
+
+
 #	-- VISTAS BASADAS EN CLASES GENÉRICAS USANDO MIXIN CLASSES --
 # vista que lista todos los fragmentos o crea uno nuevo
 class FragmentoLista(generics.ListCreateAPIView):
+    # zona pruebas
+    model = Fragmento
+    lookup_field = 'id'
+    # fin zona pruebas
+
     queryset = Fragmento.objects.all()
     serializer_class = SerializadorFragmento
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
@@ -39,16 +53,41 @@ class FragmentoLista(generics.ListCreateAPIView):
 
 # vista que muestra, actualiza o elimina un fragmento
 class FragmentoDetalles(generics.RetrieveUpdateDestroyAPIView):
+    # zona de pruebas
+    model = Fragmento
+#    lookup_field = 'id'
+    # fin zona pruebas
+
     queryset = Fragmento.objects.all()
     serializer_class = SerializadorFragmento
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+
+# vista para mostrar el html formateado del fragmento
+class FragmentoHighlight(generics.GenericAPIView):
+    queryset = Fragmento.objects.all()
+    renderer_classes = [renderers.StaticHTMLRenderer]
+    model = Fragmento
+    serializer_class = SerializadorFragmento
+
+    def get(self, request, *args, **kwargs):
+        fragmento = self.get_object()
+        return Response(fragmento.highlighted)
+
 # vista que lista todos los usuarios
 class UserLista(generics.ListAPIView):
+    # zona de pruebas
+    model = User
+    # fin zona de pruebas
+
     queryset = User.objects.all()
     serializer_class = SerializadorUser
 
 class UserDetalles(generics.RetrieveAPIView):
+    # zona de pruebas
+    model = User
+    # fin zona de pruebas
+
     queryset = User.objects.all()
     serializer_class = SerializadorUser
 
