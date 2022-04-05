@@ -10,8 +10,8 @@ from fragmentos import views
 
 #	-- URLS USANDO CLASE Router --
 router = DefaultRouter()
-router.register(r'fragmentos', views.FragmentoViewSet, basename="fragmentos")
-router.register(r'usuarios', views.UserViewSet, basename="usuarios")
+router.register(r'fragmentos', views.FragmentoViewSet, basename = "fragmentos")
+router.register(r'usuarios', views.UserViewSet, basename = "usuarios")
 
 urlpatterns = [
     path('', include(router.urls)),

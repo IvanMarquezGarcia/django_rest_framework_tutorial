@@ -35,6 +35,7 @@ def api_root(request, format = None):
         'fragmentos': reverse('fragmentos_lista', request = request, format = format),
     })
 '''
+
 #	-- VISTAS VIEWSET --
 # vista que automaticamente provee las acciones de un crud
 # es posible añadir la accion para mostrar el highlight
